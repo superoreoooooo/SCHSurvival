@@ -1,9 +1,12 @@
 package win.oreo.schsurvival.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import win.oreo.schsurvival.Main;
 import win.oreo.schsurvival.util.Util;
 
 import java.util.HashSet;
@@ -16,15 +19,18 @@ public class Command implements CommandExecutor {
 
     public Command() {
         this.util = new Util();
+        init();
     }
 
     private void init() {
         if (showSet == null) {
             showSet = new HashSet<>();
         }
-        for (Player player : showSet) {
-            player.sendMessage("Time now : " + Util.timeNow);
-        }
+        Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
+            for (Player player : showSet) {
+                player.sendMessage("Time now : " + Util.timeNow);
+            }
+        },0, 20);
     }
 
     @Override
@@ -33,7 +39,7 @@ public class Command implements CommandExecutor {
             if (sender instanceof Player player) {
                 if (args.length > 0) {
                     switch (args[0]) {
-                        case "showTime" -> {
+                        case "showTime", "showtime" -> {
                             if (!showSet.contains(player)) {
                                 showSet.add(player);
                                 player.sendMessage("added!");
@@ -42,7 +48,7 @@ public class Command implements CommandExecutor {
                                 player.sendMessage("removed!");
                             }
                         }
-                        case "start" -> {
+                        case "start" -> { //TODO 스타트시 타이틀 출력
                             util.start();
                             player.sendMessage("Started!");
                         }

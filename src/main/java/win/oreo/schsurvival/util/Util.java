@@ -32,7 +32,9 @@ public class Util {
     }
 
     public void clear() {
-        playerTimeMap.clear();
+        if (playerTimeMap != null) {
+            playerTimeMap.clear();
+        }
         isStarted = false;
         timeNow = 0;
         try {

@@ -1,0 +1,9 @@
+name: SCHSurvival
+version: '${project.version}'
+main: win.oreo.schsurvival.Main
+api-version: '1.20'
+authors: [superoreo]
+description: ㅇㅇ
+website: github.com/superoreoooooo
+commands:
+  meta:

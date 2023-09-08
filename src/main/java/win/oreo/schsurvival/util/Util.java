@@ -97,8 +97,6 @@ public class Util {
         }
     }
 
-
-
     public static String getConfigMessage(String path, String[] args) {
         FileConfiguration config = Main.getPlugin(Main.class).config;
         String text = config.getString(path);

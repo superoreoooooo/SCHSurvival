@@ -1,8 +1,10 @@
 package win.oreo.schsurvival.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -15,6 +17,7 @@ public class Util {
     public static int timeNow;
     private static boolean isStarted;
     private static BukkitTask t;
+
 
     public Util() {
         isStarted = false;
@@ -93,4 +96,43 @@ public class Util {
             Bukkit.broadcastMessage("Player : " + player.getName() + " Time : " + m + "min " + s + "sec");
         }
     }
+
+
+
+    public static String getConfigMessage(String path, String[] args) {
+        FileConfiguration config = Main.getPlugin(Main.class).config;
+        String text = config.getString(path);
+        String prefix = config.getString("prefix");
+        if (text == null) {
+            return ChatColor.RED +"ERROR";
+        }
+
+        boolean open = false;
+        StringBuilder chars = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            if (c == '%') {
+                if (open) {
+                    final char[] CHARACTERS = chars.toString().toCharArray();
+                    if (CHARACTERS[0] == 'a' && CHARACTERS[1] == 'r' && CHARACTERS[2] == 'g') {
+                        final int ARG = Integer.parseInt(String.valueOf(CHARACTERS[3]));
+
+                        text = text.replace(chars.toString(), args[ARG]);
+
+                        chars = new StringBuilder();
+                    }
+                    open = false;
+                } else {
+                    open = true;
+                }
+                continue;
+            }
+
+            if (open) {
+                chars.append(c);
+            }
+        }
+
+        return Color.format(prefix + " " + text.replace("%", ""));
+    }
+
 }

@@ -35,6 +35,7 @@ public class Command implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+        String[] msg = new String[1];
         if (sender.hasPermission("administrators")) {
             if (sender instanceof Player player) {
                 if (args.length > 0) {
@@ -42,35 +43,66 @@ public class Command implements CommandExecutor {
                         case "showTime", "showtime" -> {
                             if (!showSet.contains(player)) {
                                 showSet.add(player);
-                                player.sendMessage("added!");
+                                player.sendMessage(Util.getConfigMessage("commands.show-add", msg));
                             } else {
                                 showSet.remove(player);
-                                player.sendMessage("removed!");
+                                player.sendMessage(Util.getConfigMessage("commands.show-remove", msg));
                             }
                         }
                         case "start" -> { //TODO 스타트시 타이틀 출력
                             util.start();
-                            player.sendMessage("Started!");
+                            player.sendMessage(Util.getConfigMessage("commands.start", msg));
+                            if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-start")) {
+                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.start", msg), ""));
+                            }
                         }
                         case "clear" -> {
-                            player.sendMessage("elapsed time : " + Util.timeNow);
+                            msg[0] = String.valueOf(Util.timeNow);
                             util.clear();
-                            player.sendMessage("Cleared!");
+                            player.sendMessage(Util.getConfigMessage("commands.clear", msg));
+                            player.sendMessage(Util.getConfigMessage("commands.time", msg));
+                            if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-clear")) {
+                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.clear", msg), ""));
+                            }
                         }
                         case "pause" -> {
-                            player.sendMessage("elapsed time : " + Util.timeNow);
+                            msg[0] = String.valueOf(Util.timeNow);
                             util.pause();
-                            player.sendMessage("Paused!");
+                            player.sendMessage(Util.getConfigMessage("commands.pause", msg));
+                            player.sendMessage(Util.getConfigMessage("commands.time", msg));
+                            if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-pause")) {
+                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.pause", msg), ""));
+                            }
                         }
                         case "resume" -> {
-                            player.sendMessage("time now : " + Util.timeNow);
+                            msg[0] = String.valueOf(Util.timeNow);
                             util.resume();
-                            player.sendMessage("Resumed!");
+                            player.sendMessage(Util.getConfigMessage("commands.resume", msg));
+                            player.sendMessage(Util.getConfigMessage("commands.time", msg));
+                            if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-resume")) {
+                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.resume", msg), ""));
+                            }
                         }
                         case "result", "show" -> {
-                            player.sendMessage("total Time : " + Util.timeNow);
+                            msg[0] = String.valueOf(Util.timeNow);
                             util.showResult();
-                            player.sendMessage("Printed Result!");
+                            player.sendMessage(Util.getConfigMessage("commands.result", msg));
+                            player.sendMessage(Util.getConfigMessage("commands.time", msg));
+                            if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-result")) {
+                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.result", msg), ""));
+                            }
+                        }
+                        case "stop" -> {
+                            msg[0] = String.valueOf(Util.timeNow);
+                            util.stop();
+                            player.sendMessage(Util.getConfigMessage("commands.stop", msg));
+                            player.sendMessage(Util.getConfigMessage("commands.time", msg));
+                            if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-stop")) {
+                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.stop", msg), ""));
+                            }
+                        }
+                        default -> {
+                            player.sendMessage(Util.getConfigMessage("commands.wrong-command", msg));
                         }
                     }
                 }

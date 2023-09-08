@@ -1,0 +1,44 @@
+# colors
+# &b Aqua
+# &0 Black
+# &9 Blue
+# &3 Dark Aqua
+# &1 Dark Blue
+# &8 Dark Gray
+# &2 Dark Green
+# &5 Dark Purple
+# &4 Dark Red
+# &6 Gold
+# &7 Gray
+# &a Green
+# &d Light Purple
+# &c Red
+# &f White
+# &e Yellow
+
+prefix: "&f[&9META&f]"
+
+commands:
+  no-permission: "&c관리자만 사용 가능합니다."
+  no-player: "&c플레이어만 사용 가능합니다."
+  wrong-command: "&c잘못된 명령입니다."
+  time-now: "&7게임 시간 : %arg0%"
+  show-add: "&d진행 시간을 보도록 설정되었습니다!"
+  show-remove: "&d진행 시간을 보지 않도록 설정되었습니다!"
+  start: "&a게임이 시작되었습니다!"
+  time: "&5게임을 진행한 시간 : %arg0%"
+  clear: "&6게임 데이터를 초기화합니다!"
+  pause: "&3게임이 중지되었습니다!"
+  resume: "&e게임이 재개되었습니다!"
+  result: "&b게임 결과를 출력합니다!"
+  stop: "&c게임이 종료되었습니다!"
+
+settings:
+  title-start: true
+  title-clear: false
+  title-pause: true
+  title-resume: true
+  title-show: false
+  title-stop: true
+  gametime: 30
+  checkpoint: 20

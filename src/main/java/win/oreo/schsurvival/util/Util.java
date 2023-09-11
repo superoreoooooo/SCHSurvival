@@ -5,7 +5,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import win.oreo.schsurvival.Main;
@@ -17,6 +19,8 @@ public class Util {
     public static int timeNow;
     private static boolean isStarted;
     private static BukkitTask t;
+    private static BukkitTask bt;
+    public static int boxTick; //36000 : 30분
 
 
     public Util() {
@@ -26,6 +30,7 @@ public class Util {
     public void start() {
         if (!isStarted) {
             timeNow = 0;
+            boxTick = 0;
             isStarted = true;
             if (playerTimeMap == null) {
                 playerTimeMap = new HashMap<>();
@@ -36,10 +41,11 @@ public class Util {
 
     public void clear() {
         if (playerTimeMap != null) {
-            playerTimeMap.clear();
+                  playerTimeMap.clear();
         }
         isStarted = false;
         timeNow = 0;
+        boxTick = 0;
         try {
             Bukkit.getScheduler().cancelTask(t.getTaskId());
         } catch (Exception ignored) {
@@ -50,6 +56,7 @@ public class Util {
     public void stop() {
         isStarted = false;
         timeNow = 0;
+        boxTick = 0;
         try {
             Bukkit.getScheduler().cancelTask(t.getTaskId());
         } catch (Exception ignored) {
@@ -80,12 +87,23 @@ public class Util {
                             int t = playerTimeMap.get(player);
                             int m = t >= 60 ? t/60 : 0;
                             int s = t >= 60 ? t - (60 * m) : t;
-                            Bukkit.broadcastMessage("Player : " + player.getName() + " Time : " + m + "min " + s + "sec");
+                            //Bukkit.broadcastMessage("Player : " + player.getName() + " Time : " + m + "min " + s + "sec");
                         }
                     }
                 }
             }
         }, 0, 20);
+    }
+
+    private void boxTimer() {
+        bt = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
+            boxTick += 1;
+
+            if (boxTick >= 48000) {
+                boxTick = -1;
+                Bukkit.getScheduler().cancelTask(bt.getTaskId());
+            }
+        },0, 1);
     }
 
     public void showResult() {

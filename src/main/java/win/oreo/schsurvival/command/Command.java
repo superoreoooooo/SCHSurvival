@@ -83,7 +83,7 @@ public class Command implements CommandExecutor {
                                 Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.resume", msg), ""));
                             }
                         }
-                        case "result", "show" -> {
+                        case "result", "show" -> {//1등만보이게 + 1등부터 나머지 채팅으로
                             msg[0] = String.valueOf(Util.timeNow);
                             util.showResult();
                             player.sendMessage(Util.getConfigMessage("commands.result", msg));

@@ -40,5 +40,10 @@ settings:
   title-resume: true
   title-show: false
   title-stop: true
-  gametime: 30
-  checkpoint: 20
+  game-time: 40
+  box-time: 36000 # 20 * 60 * 30(분)
+
+interact:
+  locked: "&c이 상자는 아직 잠겨 있습니다! &f열리기까지 남은 시간: %arg0%"
+  time-over: "&c상자에 아이템을 넣을 수 없습니다!"
+  add: "상자에 다이아몬드를 넣어주세요."

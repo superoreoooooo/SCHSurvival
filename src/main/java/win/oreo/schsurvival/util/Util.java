@@ -1,11 +1,12 @@
 package win.oreo.schsurvival.util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -20,6 +21,9 @@ public class Util {
     private static BukkitTask t;
     private static BukkitTask et;
     public static int mainTick; //36000 : 30분
+    public static Inventory inv;
+    public static Location loc;
+    public static Block block;
 
 
     public Util() {
@@ -77,6 +81,7 @@ public class Util {
     }
 
     public void showResult() {
+        if (playerTimeMap == null) return;
         for (Player player : playerTimeMap.keySet()) {
             int t = playerTimeMap.get(player);
             int m = t >= 60 ? t/60 : 0;
@@ -85,16 +90,27 @@ public class Util {
         }
     }
 
+    public void checkInv() {
+
+    }
+
     public void run() {
         t = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
             mainTick += 1;
 
-            if (mainTick >= 48000) {
+            if (mainTick >= JavaPlugin.getPlugin(Main.class).config.getInt("settings.game-time")) {
                 mainTick = -1;
                 Bukkit.getScheduler().cancelTask(t.getTaskId());
-                //TODO broadcast? end message
+                Bukkit.broadcastMessage(Util.getConfigMessage("commands.stop", new String[]{}));
+
+                reset();
             }
         },0 ,1);
+    }
+
+    private void reset() {
+        block.setType(Material.AIR);
+        loc.getWorld().getEntitiesByClass(ArmorStand.class).forEach(Entity::remove);
     }
 
     public void effect() {
@@ -150,6 +166,10 @@ public class Util {
     }
 
     public static String getTimeAsString() {
+        if (mainTick == -1) {
+            return "게임이 종료되었습니다.";
+        }
+
         int totalSec = mainTick / 20;
         int min = totalSec / 60;
         int sec = totalSec - (60 * min);

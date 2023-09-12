@@ -185,5 +185,17 @@
     },
     "done": true
   },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2023-09-13 03:15:12 +0900"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/shulker_box": {
+    "criteria": {
+      "has_shulker_shell": "2023-09-13 04:08:17 +0900"
+    },
+    "done": true
+  },
   "DataVersion": 3465
 }

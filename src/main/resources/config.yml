@@ -33,6 +33,7 @@ commands:
   result: "&b게임 결과를 출력합니다!"
   stop: "&c게임이 종료되었습니다!"
   teleport: "&b이동되었습니다!"
+  box-name: "&b상자"
 
 settings:
   title-start: true
@@ -41,8 +42,8 @@ settings:
   title-resume: true
   title-show: false
   title-stop: true
-  game-time: 40
-  box-time: 36000 # 20 * 60 * 30(분)
+  game-time: 400 #48000 #20*60*40(분)
+  box-time: 200 #36000 #20*60*30(분)
   tpX: 0
   tpY: 70
   tpZ: 0
@@ -51,3 +52,6 @@ interact:
   locked: "&c이 상자는 아직 잠겨 있습니다! &f열리기까지 남은 시간: %arg0%"
   time-over: "&c상자에 아이템을 넣을 수 없습니다!"
   add: "상자에 다이아몬드를 넣어주세요."
+  put: "상자에 다이아몬드를 넣었습니다! 시간: %arg0%"
+  put-error: "상자에는 다이아몬드만 넣어주세요."
+  clk-error: "쉬프트 클릭 하지 말아주세요."

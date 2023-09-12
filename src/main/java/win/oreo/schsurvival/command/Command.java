@@ -1,11 +1,15 @@
 package win.oreo.schsurvival.command;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import win.oreo.schsurvival.Main;
@@ -28,7 +32,11 @@ public class Command implements CommandExecutor {
         if (showSet == null) {
             showSet = new HashSet<>();
         }
-        showSet.forEach(player -> Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {player.sendMessage("Time now : " + Util.getTimeAsString());}, 0, 20));
+        Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
+            for (Player player : showSet) {
+                player.sendMessage("Time now : " + Util.getTimeAsString());
+            }
+        }, 0, 20);
     }
 
     @Override
@@ -38,6 +46,27 @@ public class Command implements CommandExecutor {
             if (sender instanceof Player player) {
                 if (args.length > 0) {
                     switch (args[0]) {
+                        case "set" -> {
+                            Location location = player.getLocation().toBlockLocation();
+                            location.getBlock().setType(Material.CHEST);
+                            location.getBlock().setMetadata("data", new FixedMetadataValue(JavaPlugin.getPlugin(Main.class), "sch"));
+
+                            BlockState state = location.getBlock().getState();
+                            Chest chest = (Chest) state;
+
+                            Util.inv = chest.getInventory();
+                            Util.loc = location;
+                            Util.block = location.getBlock();
+
+                            ArmorStand checker = (ArmorStand) player.getWorld().spawnEntity(location.add(0.5, 1.5, 0.5), EntityType.ARMOR_STAND);
+                            checker.setCustomName(Util.getConfigMessage("commands.box-name", msg));
+                            checker.setGravity(false);
+                            checker.setCanPickupItems(false);
+                            checker.setVisible(false);
+                            checker.setCanMove(false);
+                            checker.setMarker(true);
+                            checker.setCustomNameVisible(true);
+                        }
                         case "teleport" -> {
                             int x = JavaPlugin.getPlugin(Main.class).config.getInt("settings.tpX");
                             int y = JavaPlugin.getPlugin(Main.class).config.getInt("settings.tpY");
@@ -98,9 +127,11 @@ public class Command implements CommandExecutor {
                             msg[0] = Util.getTimeAsString();
                             util.showResult();
                             player.sendMessage(Util.getConfigMessage("commands.result", msg));
-                            player.sendMessage(Util.getConfigMessage("commands.time", msg));
                             if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-result")) {
-                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.result", msg), ""));
+                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendMessage(Util.getConfigMessage("commands.result", msg), ""));
+                            }
+                            for (Player player1 : Util.playerTimeMap.keySet()) {
+                                Bukkit.broadcastMessage(player1.getName() + " " + Util.playerTimeMap.get(player1));
                             }
                         }
                         case "stop" -> {

@@ -32,6 +32,7 @@ commands:
   resume: "&e게임이 재개되었습니다!"
   result: "&b게임 결과를 출력합니다!"
   stop: "&c게임이 종료되었습니다!"
+  teleport: "&b이동되었습니다!"
 
 settings:
   title-start: true
@@ -42,6 +43,9 @@ settings:
   title-stop: true
   game-time: 40
   box-time: 36000 # 20 * 60 * 30(분)
+  tpX: 0
+  tpY: 70
+  tpZ: 0
 
 interact:
   locked: "&c이 상자는 아직 잠겨 있습니다! &f열리기까지 남은 시간: %arg0%"

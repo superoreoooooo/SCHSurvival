@@ -1,10 +1,12 @@
 package win.oreo.schsurvival;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import win.oreo.schsurvival.command.Command;
 import win.oreo.schsurvival.command.Tabcomplete;
+import win.oreo.schsurvival.listener.Listener;
 import win.oreo.schsurvival.util.Color;
 
 public final class Main extends JavaPlugin {
@@ -15,6 +17,8 @@ public final class Main extends JavaPlugin {
         config = this.getConfig();
         getCommand("meta").setExecutor(new Command());
         getCommand("meta").setTabCompleter(new Tabcomplete());
+
+        Bukkit.getPluginManager().registerEvents(new Listener(), this);
     }
 
     @Override

@@ -5,10 +5,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import win.oreo.schsurvival.Main;
 
@@ -16,11 +16,10 @@ import java.util.HashMap;
 
 public class Util {
     public static HashMap<Player, Integer> playerTimeMap;
-    public static int timeNow;
     private static boolean isStarted;
     private static BukkitTask t;
-    private static BukkitTask bt;
-    public static int boxTick; //36000 : 30분
+    private static BukkitTask et;
+    public static int mainTick; //36000 : 30분
 
 
     public Util() {
@@ -29,13 +28,12 @@ public class Util {
 
     public void start() {
         if (!isStarted) {
-            timeNow = 0;
-            boxTick = 0;
+            mainTick = 0;
             isStarted = true;
             if (playerTimeMap == null) {
                 playerTimeMap = new HashMap<>();
             }
-            timer();
+            run();
         }
     }
 
@@ -44,10 +42,10 @@ public class Util {
                   playerTimeMap.clear();
         }
         isStarted = false;
-        timeNow = 0;
-        boxTick = 0;
+        mainTick = 0;
         try {
             Bukkit.getScheduler().cancelTask(t.getTaskId());
+            Bukkit.getScheduler().cancelTask(et.getTaskId());
         } catch (Exception ignored) {
 
         }
@@ -55,10 +53,10 @@ public class Util {
 
     public void stop() {
         isStarted = false;
-        timeNow = 0;
-        boxTick = 0;
+        mainTick = 0;
         try {
             Bukkit.getScheduler().cancelTask(t.getTaskId());
+            Bukkit.getScheduler().cancelTask(et.getTaskId());
         } catch (Exception ignored) {
 
         }
@@ -68,42 +66,14 @@ public class Util {
         if (!isStarted) return;
         isStarted = false;
         Bukkit.getScheduler().cancelTask(t.getTaskId());
+        Bukkit.getScheduler().cancelTask(et.getTaskId());
     }
 
     public void resume() {
         if (isStarted) return;
         isStarted = true;
-        timer();
-    }
-
-    private void timer() {
-        t = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
-            timeNow += 1;
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getGameMode().equals(GameMode.SURVIVAL)) {
-                    if (!playerTimeMap.containsKey(player)) {
-                        if (player.getInventory().contains(Material.DIAMOND)) {
-                            playerTimeMap.put(player, timeNow);
-                            int t = playerTimeMap.get(player);
-                            int m = t >= 60 ? t/60 : 0;
-                            int s = t >= 60 ? t - (60 * m) : t;
-                            //Bukkit.broadcastMessage("Player : " + player.getName() + " Time : " + m + "min " + s + "sec");
-                        }
-                    }
-                }
-            }
-        }, 0, 20);
-    }
-
-    private void boxTimer() {
-        bt = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
-            boxTick += 1;
-
-            if (boxTick >= 48000) {
-                boxTick = -1;
-                Bukkit.getScheduler().cancelTask(bt.getTaskId());
-            }
-        },0, 1);
+        run();
+        effect();
     }
 
     public void showResult() {
@@ -113,6 +83,34 @@ public class Util {
             int s = t >= 60 ? t - (60 * m) : t;
             Bukkit.broadcastMessage("Player : " + player.getName() + " Time : " + m + "min " + s + "sec");
         }
+    }
+
+    public void run() {
+        t = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
+            mainTick += 1;
+
+            if (mainTick >= 48000) {
+                mainTick = -1;
+                Bukkit.getScheduler().cancelTask(t.getTaskId());
+                //TODO broadcast? end message
+            }
+        },0 ,1);
+    }
+
+    public void effect() {
+        et = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
+            if (isStarted) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.getGameMode().equals(GameMode.SURVIVAL)) {
+                        if (player.getInventory().contains(Material.DIAMOND)) {
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000, 1));
+                        } else {
+                            player.removePotionEffect(PotionEffectType.GLOWING);
+                        }
+                    }
+                }
+            }
+        },0 ,1);
     }
 
     public static String getConfigMessage(String path, String[] args) {
@@ -151,4 +149,11 @@ public class Util {
         return Color.format(prefix + " " + text.replace("%", ""));
     }
 
+    public static String getTimeAsString() {
+        int totalSec = mainTick / 20;
+        int min = totalSec / 60;
+        int sec = totalSec - (60 * min);
+
+        return min + "분 " + sec + "초";
+    }
 }

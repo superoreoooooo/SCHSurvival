@@ -1,6 +1,8 @@
 package win.oreo.schsurvival.command;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,11 +28,7 @@ public class Command implements CommandExecutor {
         if (showSet == null) {
             showSet = new HashSet<>();
         }
-        Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
-            for (Player player : showSet) {
-                player.sendMessage("Time now : " + Util.timeNow);
-            }
-        },0, 20);
+        showSet.forEach(player -> Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {player.sendMessage("Time now : " + Util.getTimeAsString());}, 0, 20));
     }
 
     @Override
@@ -40,6 +38,18 @@ public class Command implements CommandExecutor {
             if (sender instanceof Player player) {
                 if (args.length > 0) {
                     switch (args[0]) {
+                        case "teleport" -> {
+                            int x = JavaPlugin.getPlugin(Main.class).config.getInt("settings.tpX");
+                            int y = JavaPlugin.getPlugin(Main.class).config.getInt("settings.tpY");
+                            int z = JavaPlugin.getPlugin(Main.class).config.getInt("settings.tpZ");
+
+                            for (Player players : Bukkit.getOnlinePlayers()) {
+                                if (players.getGameMode().equals(GameMode.SURVIVAL) || players.getGameMode().equals(GameMode.ADVENTURE)) {
+                                    players.teleport(new Location(players.getWorld(), x, y, z));
+                                    players.sendMessage(Util.getConfigMessage("commands.teleport", msg));
+                                }
+                            }
+                        }
                         case "showTime", "showtime" -> {
                             if (!showSet.contains(player)) {
                                 showSet.add(player);
@@ -51,13 +61,14 @@ public class Command implements CommandExecutor {
                         }
                         case "start" -> { //TODO 스타트시 타이틀 출력
                             util.start();
+                            util.effect();
                             player.sendMessage(Util.getConfigMessage("commands.start", msg));
                             if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-start")) {
                                 Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.start", msg), ""));
                             }
                         }
                         case "clear" -> {
-                            msg[0] = String.valueOf(Util.timeNow);
+                            msg[0] = Util.getTimeAsString();
                             util.clear();
                             player.sendMessage(Util.getConfigMessage("commands.clear", msg));
                             player.sendMessage(Util.getConfigMessage("commands.time", msg));
@@ -66,7 +77,7 @@ public class Command implements CommandExecutor {
                             }
                         }
                         case "pause" -> {
-                            msg[0] = String.valueOf(Util.timeNow);
+                            msg[0] = Util.getTimeAsString();
                             util.pause();
                             player.sendMessage(Util.getConfigMessage("commands.pause", msg));
                             player.sendMessage(Util.getConfigMessage("commands.time", msg));
@@ -75,7 +86,7 @@ public class Command implements CommandExecutor {
                             }
                         }
                         case "resume" -> {
-                            msg[0] = String.valueOf(Util.timeNow);
+                            msg[0] = Util.getTimeAsString();
                             util.resume();
                             player.sendMessage(Util.getConfigMessage("commands.resume", msg));
                             player.sendMessage(Util.getConfigMessage("commands.time", msg));
@@ -84,7 +95,7 @@ public class Command implements CommandExecutor {
                             }
                         }
                         case "result", "show" -> {//1등만보이게 + 1등부터 나머지 채팅으로
-                            msg[0] = String.valueOf(Util.timeNow);
+                            msg[0] = Util.getTimeAsString();
                             util.showResult();
                             player.sendMessage(Util.getConfigMessage("commands.result", msg));
                             player.sendMessage(Util.getConfigMessage("commands.time", msg));
@@ -93,7 +104,7 @@ public class Command implements CommandExecutor {
                             }
                         }
                         case "stop" -> {
-                            msg[0] = String.valueOf(Util.timeNow);
+                            msg[0] = Util.getTimeAsString();
                             util.stop();
                             player.sendMessage(Util.getConfigMessage("commands.stop", msg));
                             player.sendMessage(Util.getConfigMessage("commands.time", msg));

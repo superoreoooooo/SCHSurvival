@@ -156,7 +156,9 @@ public class Util {
 
     public static void unLoad() {
         if (bar != null) {
-            bar.removeAll();
+            for (Player player : bar.getPlayers()) {
+                bar.removePlayer(player);
+            }
         }
     }
 

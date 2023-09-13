@@ -8,6 +8,7 @@ import win.oreo.schsurvival.command.Command;
 import win.oreo.schsurvival.command.Tabcomplete;
 import win.oreo.schsurvival.listener.Listener;
 import win.oreo.schsurvival.util.Color;
+import win.oreo.schsurvival.util.Util;
 
 public final class Main extends JavaPlugin {
     public FileConfiguration config;
@@ -24,5 +25,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         Bukkit.getScheduler().cancelTasks(this);
+        Util.unLoad();
     }
 }

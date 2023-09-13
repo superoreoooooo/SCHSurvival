@@ -1,7 +1,14 @@
 package win.oreo.schsurvival.util;
 
+import com.destroystokyo.paper.Title;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -12,6 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import win.oreo.schsurvival.Main;
+import win.oreo.schsurvival.command.Command;
 
 import java.util.*;
 
@@ -38,6 +46,7 @@ public class Util {
                 playerTimeMap = new HashMap<>();
             }
             run();
+            init();
         }
     }
 
@@ -80,11 +89,19 @@ public class Util {
         effect();
     }
 
+    private static BossBar bar;
+
+    public void init() {
+        bar = Bukkit.createBossBar("게임 시간", BarColor.BLUE, BarStyle.SOLID);
+        bar.setProgress(0.0);
+    }
+
     public void showResult() {
         if (playerTimeMap == null) return;
         List<Map.Entry<Player, Integer>> entryList = new LinkedList<>(playerTimeMap.entrySet());
         entryList.sort(Map.Entry.comparingByValue());
 
+        int i = 1;
         for (Map.Entry<Player, Integer> entry : entryList) {
             Player player = entry.getKey();
             int t = entry.getValue();
@@ -92,24 +109,26 @@ public class Util {
             String[] args = new String[2];
             args[0] = player.getName();
             args[1] = getTimeAsString(t);
-            Bukkit.broadcastMessage(Util.getConfigMessage("commands.result-p", args));
+            Bukkit.broadcastMessage(Util.getConfigMessage("commands.result-p", args) + ", " + i++ + ChatColor.AQUA + "등");
         }
-    }
-
-    public void checkInv() {
-
     }
 
     public void run() {
         t = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
             mainTick += 1;
-
+            bar.setProgress((double) mainTick / JavaPlugin.getPlugin(Main.class).config.getInt("settings.game-time"));
             if (mainTick >= JavaPlugin.getPlugin(Main.class).config.getInt("settings.game-time")) {
                 mainTick = -1;
                 Bukkit.getScheduler().cancelTask(t.getTaskId());
                 Bukkit.broadcastMessage(Util.getConfigMessage("commands.stop", new String[]{}));
 
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.sendTitle(Util.getConfigMessage("commands.stop", new String[]{}), Util.getConfigMessage("commands.title-sub", new String[]{}));
+                    player.removePotionEffect(PotionEffectType.GLOWING);
+                }
+
                 reset();
+                unLoad();
             }
         },0 ,1);
     }
@@ -117,12 +136,38 @@ public class Util {
     private void reset() {
         block.setType(Material.AIR);
         loc.getWorld().getEntitiesByClass(ArmorStand.class).forEach(Entity::remove);
+
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Main.class), () -> {
+            int x = JavaPlugin.getPlugin(Main.class).config.getInt("settings.otpX");
+            int y = JavaPlugin.getPlugin(Main.class).config.getInt("settings.otpY");
+            int z = JavaPlugin.getPlugin(Main.class).config.getInt("settings.otpZ");
+            String[] msg = new String[1];
+
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                if (players.getGameMode().equals(GameMode.SURVIVAL)) {
+                    players.teleport(new Location(players.getWorld(), x, y, z));
+                    players.sendMessage(Util.getConfigMessage("commands.teleport", msg));
+                }
+            }
+        }, 200);
+
+        Command.isSet = false;
+    }
+
+    public static void unLoad() {
+        if (bar != null) {
+            bar.removeAll();
+        }
     }
 
     public void effect() {
         et = Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(Main.class), () -> {
             if (isStarted) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(getTimeAsString())); //action bar
+                    if (!bar.getPlayers().contains(player)) {
+                        bar.addPlayer(player);
+                    }
                     if (player.getGameMode().equals(GameMode.SURVIVAL)) {
                         if (player.getInventory().contains(Material.DIAMOND)) {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 10000, 1));
@@ -132,7 +177,7 @@ public class Util {
                     }
                 }
             }
-        },0 ,1);
+        },0 ,20);
     }
 
     public static String getConfigMessage(String path, String[] args) {

@@ -30,13 +30,14 @@ commands:
   clear: "&6게임 데이터를 초기화합니다!"
   pause: "&3게임이 중지되었습니다!"
   resume: "&e게임이 재개되었습니다!"
-  result: "&b게임 결과를 출력합니다!"
-  stop: "&c게임이 종료되었습니다!"
+  result: "&b게임 결과를 공개합니다!"
+  stop: "&c다이아를 찾아라가 종료되었습니다!"
   teleport: "&b이동되었습니다!"
   box-name: "&b상자"
   set-tick: "&6시간을 %arg0%으로 설정했습니다!"
   set: "&a상자를 생성했습니다."
-  result-p: "플레이어 이름 : %arg0%, 다이아몬드를 넣은 시간 : %arg1%"
+  result-p: "&b플레이어 이름 : &f[%arg0%], &b다이아몬드를 넣은 시간 : &f[%arg1%]"
+  title-sub: "10초 뒤 자동으로 텔레포트 됩니다."
 
 settings:
   title-start: true
@@ -45,16 +46,22 @@ settings:
   title-resume: true
   title-show: false
   title-stop: true
-  game-time: 800 #48000 #20*60*40(분)
-  box-time: 200 #36000 #20*60*30(분)
-  tpX: 0
-  tpY: 70
-  tpZ: 0
+  title-result: false
+  game-time: 800 #48000 #800 #20*60*40(분)
+  box-time: 200 #36000 #200 #20*60*30(분)
+  tpX: 145
+  tpY: 64
+  tpZ: 320
+  otpX: 234 #origin
+  otpY: 93
+  otpZ: 314
 
 interact:
   locked: "&c이 상자는 아직 잠겨 있습니다! &f열리기까지 남은 시간: %arg0%"
   time-over: "&c상자에 아이템을 넣을 수 없습니다!"
   add: "상자에 다이아몬드를 넣어주세요."
   put: "상자에 다이아몬드를 넣었습니다! 시간: %arg0%"
-  put-error: "상자에는 다이아몬드만 넣어주세요."
-  clk-error: "쉬프트 클릭 하지 말아주세요."
+  put-error: "&c상자에는 다이아몬드만 넣어주세요."
+  clk-error: "&c쉬프트 클릭 하지 말아주세요."
+  drg-error: "&c드래그 하지 말고 하나씩 넣어 주세요."
+  get-diamond: "[%arg0%]&d이(가) 다이아몬드를 얻었습니다! 좌표 :&f[%arg1%, %arg2%, %arg3%]"

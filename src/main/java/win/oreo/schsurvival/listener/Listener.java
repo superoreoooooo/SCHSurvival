@@ -1,14 +1,17 @@
 package win.oreo.schsurvival.listener;
 
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import win.oreo.schsurvival.Main;
@@ -22,6 +25,14 @@ public class Listener implements org.bukkit.event.Listener {
 
     public Listener() {
         playerSet = new HashSet<>();
+    }
+
+    @EventHandler
+    public void onGet(EntityPickupItemEvent e) {
+        if (e.getEntity() instanceof Player player) {
+            String[] args = new String[]{player.getName(), String.valueOf(player.getLocation().getBlockX()), String.valueOf(player.getLocation().getBlockY()), String.valueOf(player.getLocation().getBlockZ())};
+            Bukkit.broadcastMessage(Util.getConfigMessage("interact.get-diamond", args));
+        }
     }
 
     @EventHandler
@@ -130,6 +141,9 @@ public class Listener implements org.bukkit.event.Listener {
         if (e.getInventory() == null) return;
         if (e.getInventory().equals(Util.inv)) {
             Player player = (Player) e.getWhoClicked();
+            player.sendMessage(Util.getConfigMessage("interact.drg-error", args));
+            e.setCancelled(true);
+            /**
             if (e.getCursor() == null) return;
             ItemStack is = e.getCursor();
             if (e.getCursor().getType().equals(Material.DIAMOND)) {
@@ -144,7 +158,7 @@ public class Listener implements org.bukkit.event.Listener {
                 e.setCancelled(true);
                 player.getInventory().addItem(is);
                 player.closeInventory();
-            }
+            } **/
         }
     }
 }

@@ -22,10 +22,12 @@ public class Command implements CommandExecutor {
 
     private final Util util;
     private static Set<Player> showSet;
+    public static boolean isSet;
 
     public Command() {
         this.util = new Util();
         init();
+        isSet = false;
     }
 
     private void init() {
@@ -56,6 +58,7 @@ public class Command implements CommandExecutor {
                             }
                         }
                         case "set" -> {
+                            isSet = true;
                             Location location = player.getLocation().toBlockLocation();
                             location.getBlock().setType(Material.CHEST);
                             location.getBlock().setMetadata("data", new FixedMetadataValue(JavaPlugin.getPlugin(Main.class), "sch"));
@@ -89,7 +92,12 @@ public class Command implements CommandExecutor {
                                 }
                             }
                         }
-                        case "showTime", "showtime" -> {
+                        case "showtick" -> {
+                            for (Player player1 : Util.playerTimeMap.keySet()) {
+                                player.sendMessage(player1.getName() + " " + Util.playerTimeMap.get(player1));
+                            }
+                        }
+                        case "showtime" -> {
                             if (!showSet.contains(player)) {
                                 showSet.add(player);
                                 player.sendMessage(Util.getConfigMessage("commands.show-add", msg));
@@ -99,11 +107,15 @@ public class Command implements CommandExecutor {
                             }
                         }
                         case "start" -> { //TODO 스타트시 타이틀 출력
-                            util.start();
-                            util.effect();
-                            player.sendMessage(Util.getConfigMessage("commands.start", msg));
-                            if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-start")) {
-                                Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.start", msg), ""));
+                            if (isSet) {
+                                util.start();
+                                util.effect();
+                                player.sendMessage(Util.getConfigMessage("commands.start", msg));
+                                if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-start")) {
+                                    Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendTitle(Util.getConfigMessage("commands.start", msg), ""));
+                                }
+                            } else {
+                                player.sendMessage("/meta set 먼저 치랫잖아 바부야");
                             }
                         }
                         case "clear" -> {

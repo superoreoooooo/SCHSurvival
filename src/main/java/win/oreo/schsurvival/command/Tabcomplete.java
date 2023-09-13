@@ -19,11 +19,12 @@ public class Tabcomplete implements TabCompleter {
             completions.add("pause");
             completions.add("resume");
             completions.add("result");
-            completions.add("showTime");
+            completions.add("showtime");
             completions.add("set");
             completions.add("tick");
             completions.add("teleport");
             completions.add("show");
+            completions.add("showtick");
 
             return completions;
         }

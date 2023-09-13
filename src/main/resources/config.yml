@@ -36,6 +36,7 @@ commands:
   box-name: "&b상자"
   set-tick: "&6시간을 %arg0%으로 설정했습니다!"
   set: "&a상자를 생성했습니다."
+  result-p: "플레이어 이름 : %arg0%, 다이아몬드를 넣은 시간 : %arg1%"
 
 settings:
   title-start: true
@@ -44,7 +45,7 @@ settings:
   title-resume: true
   title-show: false
   title-stop: true
-  game-time: 400 #48000 #20*60*40(분)
+  game-time: 800 #48000 #20*60*40(분)
   box-time: 200 #36000 #20*60*30(분)
   tpX: 0
   tpY: 70

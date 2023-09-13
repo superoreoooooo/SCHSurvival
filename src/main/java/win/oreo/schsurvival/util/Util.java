@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import win.oreo.schsurvival.Main;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class Util {
     public static HashMap<Player, Integer> playerTimeMap;
@@ -82,11 +82,17 @@ public class Util {
 
     public void showResult() {
         if (playerTimeMap == null) return;
-        for (Player player : playerTimeMap.keySet()) {
-            int t = playerTimeMap.get(player);
-            int m = t >= 60 ? t/60 : 0;
-            int s = t >= 60 ? t - (60 * m) : t;
-            Bukkit.broadcastMessage("Player : " + player.getName() + " Time : " + m + "min " + s + "sec");
+        List<Map.Entry<Player, Integer>> entryList = new LinkedList<>(playerTimeMap.entrySet());
+        entryList.sort(Map.Entry.comparingByValue());
+
+        for (Map.Entry<Player, Integer> entry : entryList) {
+            Player player = entry.getKey();
+            int t = entry.getValue();
+
+            String[] args = new String[2];
+            args[0] = player.getName();
+            args[1] = getTimeAsString(t);
+            Bukkit.broadcastMessage(Util.getConfigMessage("commands.result-p", args));
         }
     }
 
@@ -171,6 +177,14 @@ public class Util {
         }
 
         int totalSec = mainTick / 20;
+        int min = totalSec / 60;
+        int sec = totalSec - (60 * min);
+
+        return min + "분 " + sec + "초";
+    }
+
+    public static String getTimeAsString(int time) {
+        int totalSec = time / 20;
         int min = totalSec / 60;
         int sec = totalSec - (60 * min);
 

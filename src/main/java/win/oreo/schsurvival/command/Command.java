@@ -135,13 +135,13 @@ public class Command implements CommandExecutor {
                         }
                         case "result", "show" -> {//1등만보이게 + 1등부터 나머지 채팅으로
                             msg[0] = Util.getTimeAsString();
-                            util.showResult();
                             player.sendMessage(Util.getConfigMessage("commands.result", msg));
                             if (JavaPlugin.getPlugin(Main.class).config.getBoolean("settings.title-result")) {
                                 Bukkit.getOnlinePlayers().forEach(player1 -> player1.sendMessage(Util.getConfigMessage("commands.result", msg), ""));
                             }
+                            util.showResult();
                             for (Player player1 : Util.playerTimeMap.keySet()) {
-                                Bukkit.broadcastMessage(player1.getName() + " " + Util.playerTimeMap.get(player1));
+                                //Bukkit.broadcastMessage(player1.getName() + " " + Util.playerTimeMap.get(player1));
                             }
                         }
                         case "stop" -> {

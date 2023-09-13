@@ -20,6 +20,10 @@ public class Tabcomplete implements TabCompleter {
             completions.add("resume");
             completions.add("result");
             completions.add("showTime");
+            completions.add("set");
+            completions.add("tick");
+            completions.add("teleport");
+            completions.add("show");
 
             return completions;
         }

@@ -46,6 +46,15 @@ public class Command implements CommandExecutor {
             if (sender instanceof Player player) {
                 if (args.length > 0) {
                     switch (args[0]) {
+                        case "tick" -> {
+                            if (args.length > 1) {
+                                Util.mainTick = Integer.parseInt(args[1]);
+                                args[0] = String.valueOf(Util.mainTick);
+                                player.sendMessage(Util.getConfigMessage("commands.set-tick", msg));
+                            } else {
+                                player.sendMessage(Util.getConfigMessage("commands.wrong-command", msg));
+                            }
+                        }
                         case "set" -> {
                             Location location = player.getLocation().toBlockLocation();
                             location.getBlock().setType(Material.CHEST);
@@ -66,6 +75,7 @@ public class Command implements CommandExecutor {
                             checker.setCanMove(false);
                             checker.setMarker(true);
                             checker.setCustomNameVisible(true);
+                            player.sendMessage(Util.getConfigMessage("commands.set", msg));
                         }
                         case "teleport" -> {
                             int x = JavaPlugin.getPlugin(Main.class).config.getInt("settings.tpX");

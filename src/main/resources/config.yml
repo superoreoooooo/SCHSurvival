@@ -34,6 +34,8 @@ commands:
   stop: "&c게임이 종료되었습니다!"
   teleport: "&b이동되었습니다!"
   box-name: "&b상자"
+  set-tick: "&6시간을 %arg0%으로 설정했습니다!"
+  set: "&a상자를 생성했습니다."
 
 settings:
   title-start: true

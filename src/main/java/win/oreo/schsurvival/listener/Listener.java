@@ -1,5 +1,6 @@
 package win.oreo.schsurvival.listener;
 
+import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

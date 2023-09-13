@@ -23,5 +23,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        Bukkit.getScheduler().cancelTasks(this);
     }
 }

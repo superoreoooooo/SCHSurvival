@@ -43,7 +43,7 @@ public class Util {
 
     public void clear() {
         if (playerTimeMap != null) {
-                  playerTimeMap.clear();
+            playerTimeMap.clear();
         }
         isStarted = false;
         mainTick = 0;

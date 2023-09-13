@@ -6,11 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import win.oreo.schsurvival.Main;
 import win.oreo.schsurvival.util.Util;
@@ -96,24 +94,31 @@ public class Listener implements org.bukkit.event.Listener {
     public void onClickItem(InventoryClickEvent e) {
         if (Util.inv == null) return;
         String[] args = new String[1];
-        if (e.getClick().isShiftClick()) {
-            e.getWhoClicked().sendMessage(Util.getConfigMessage("interact.clk-error", new String[]{}));
-        }
         if (e.getClickedInventory() == null) return;
         if (e.getClickedInventory().equals(Util.inv)) {
             Player player = (Player) e.getWhoClicked();
             if (e.getCursor() == null) return;
+            ItemStack is = e.getCursor();
             if (e.getCursor().getType().equals(Material.DIAMOND)) {
+                e.getCursor().setAmount(0);
                 args[0] = Util.getTimeAsString();
                 player.sendMessage(Util.getConfigMessage("interact.put", args));
                 Util.playerTimeMap.put(player, Util.mainTick);
                 playerSet.add(player);
+                player.closeInventory();
             } else {
                 player.sendMessage(Util.getConfigMessage("interact.put-error", args));
                 e.setCancelled(true);
+                player.closeInventory();
+                player.getInventory().addItem(is);
             }
-            e.getCursor().setAmount(0);
-            player.closeInventory();
+        }
+        else {
+            if (e.getView().getTopInventory().equals(Util.inv) && e.isShiftClick()) {
+                e.getWhoClicked().sendMessage(Util.getConfigMessage("interact.clk-error", new String[]{}));
+                e.setCancelled(true);
+                e.getWhoClicked().closeInventory();
+            }
         }
     }
 
@@ -125,17 +130,20 @@ public class Listener implements org.bukkit.event.Listener {
         if (e.getInventory().equals(Util.inv)) {
             Player player = (Player) e.getWhoClicked();
             if (e.getCursor() == null) return;
+            ItemStack is = e.getCursor();
             if (e.getCursor().getType().equals(Material.DIAMOND)) {
+                e.getCursor().setAmount(0);
                 args[0] = Util.getTimeAsString();
                 player.sendMessage(Util.getConfigMessage("interact.put", args));
                 Util.playerTimeMap.put(player, Util.mainTick);
                 playerSet.add(player);
+                player.closeInventory();
             } else {
                 player.sendMessage(Util.getConfigMessage("interact.put-error", args));
                 e.setCancelled(true);
+                player.getInventory().addItem(is);
+                player.closeInventory();
             }
-            e.getCursor().setAmount(0);
-            player.closeInventory();
         }
     }
 }

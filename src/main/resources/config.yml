@@ -47,8 +47,8 @@ settings:
   title-show: false
   title-stop: true
   title-result: false
-  game-time: 800 #48000 #800 #20*60*40(분)
-  box-time: 200 #36000 #200 #20*60*30(분)
+  game-time: 48000 #48000 #800 #20*60*40(분)
+  box-time: 36000 #36000 #200 #20*60*30(분)
   tpX: 145
   tpY: 64
   tpZ: 320

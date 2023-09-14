@@ -30,8 +30,10 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void onGet(EntityPickupItemEvent e) {
         if (e.getEntity() instanceof Player player) {
-            String[] args = new String[]{player.getName(), String.valueOf(player.getLocation().getBlockX()), String.valueOf(player.getLocation().getBlockY()), String.valueOf(player.getLocation().getBlockZ())};
-            Bukkit.broadcastMessage(Util.getConfigMessage("interact.get-diamond", args));
+            if (e.getItem().getItemStack().getType().equals(Material.DIAMOND)) {
+                String[] args = new String[]{player.getName(), String.valueOf(player.getLocation().getBlockX()), String.valueOf(player.getLocation().getBlockY()), String.valueOf(player.getLocation().getBlockZ())};
+                Bukkit.broadcastMessage(Util.getConfigMessage("interact.get-diamond", args));
+            }
         }
     }
 

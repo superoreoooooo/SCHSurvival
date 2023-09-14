@@ -50,7 +50,7 @@ settings:
   game-time: 48000 #48000 #800 #20*60*40(분)
   box-time: 36000 #36000 #200 #20*60*30(분)
   tpX: 145
-  tpY: 64
+  tpY: 65
   tpZ: 320
   otpX: 234 #origin
   otpY: 93
